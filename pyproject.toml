@@ -1,0 +1,74 @@
+[project]
+name = "qwen-asr-vrc"
+version = "0.1.0"
+description = "VRChat speech-to-text (STT) via Qwen-ASR with Twitch chat integration"
+readme = "README.md"
+requires-python = "~=3.12.0"
+dependencies = [
+  "python-osc~=1.9",
+  "cuda-python>=12.3",
+  "torch~=2.11.0",
+  "torchaudio~=2.11.0",
+  "twitchapi~=4.5",
+  "fastapi[standard]~=0.121",
+  "sounddevice~=0.5",
+  "pyperclip~=1.11",
+  "qwen-asr>=0.0.6",
+  "flash-attn",
+  "typer~=0.15",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchaudio = { index = "pytorch" }
+flash-attn = [
+  # { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl", marker = "sys_platform == 'win32'" },
+  { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+[dependency-groups]
+dev = ["mypy>=2.1.0", "ruff>=0.14.3", "ty>=0.0.40"]
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "E",       # pycodestyle errors
+  "W",       # pycodestyle warnings
+  "F",       # pyflakes (undefined names, unused imports)
+  "I",       # isort (import ordering)
+  "B",       # flake8-bugbear (detects likely bugs and design issues)
+  "UP",      # pyupgrade (upgrades syntax to newer Python versions)
+  "SIM",     # flake8-simplify (identifies code that can be simplified)
+  "C4",      # flake8-comprehensions (flags unnecessary comprehension patterns)
+  "PIE",     # flake8-pie (miscellaneous lints for style and design issues)
+  "T20",     # flake8-print (checks for print statements)
+  "G",       # flake8-logging-format (flags formatting issues in logging calls)
+  "LOG",     # flake8-logging (detects common logging misuse)
+  "FAST",    # FastAPI (FastAPI-specific linting rules)
+  "PTH",     # flake8-use-pathlib (enforces pathlib over os.path)
+  "N",       # pep8-naming (validates Python naming conventions)
+  "RUF",     # Ruff-specific rules (ambiguous unicode, mutable defaults, etc.)
+  "TRY401",  # tryceratops: redundant exception object in logging.exception call
+  "TRY203",  # tryceratops: useless try-except (error immediately re-raised)
+  "TRY201",  # tryceratops: verbose raise (explicit exception name unnecessary)
+  "TRY400",  # tryceratops: use logging.exception instead of logging.error
+  "SLF",     # flake8-self (detects private member access)
+  "PLC0415", # pylint: import should be at top-level of a file
+  "D",       # pydocstyle (validates docstring conventions, Google style)
+]
+
+ignore = [
+  "E501",   # line too long — formatter handles this
+  "B008",   # function call in default argument — common FastAPI/typer pattern
+  "SIM108", # ternary operator — readability is subjective
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
