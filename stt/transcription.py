@@ -1,7 +1,5 @@
 """Transcription processing: ASR inference, hallucination filtering, and buffering."""
 
-from __future__ import annotations
-
 import datetime
 import logging
 import string

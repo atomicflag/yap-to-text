@@ -1,7 +1,5 @@
 """Twitch chat integration: OAuth authentication and message sending."""
 
-from __future__ import annotations
-
 import asyncio
 import logging
 import threading

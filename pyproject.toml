@@ -22,7 +22,7 @@ dependencies = [
 torch = { index = "pytorch" }
 torchaudio = { index = "pytorch" }
 flash-attn = [
-  # { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl", marker = "sys_platform == 'win32'" },
+  { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl", marker = "sys_platform == 'win32'" },
   { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl", marker = "sys_platform == 'linux'" },
 ]
 
