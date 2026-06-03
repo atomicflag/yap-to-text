@@ -1,0 +1,23 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Config with secrets (never commit)
+config.json
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+.ruff_cache/
+*.log
+.ropeproject
+.pi-lens

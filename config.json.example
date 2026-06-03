@@ -1,0 +1,15 @@
+# Copy this file to config.json and fill in your actual values.
+# config.json is gitignored — never commit it with real secrets.
+
+{
+  "twitch": {
+    "app_id": "YOUR_TWITCH_APP_ID",
+    "app_secret": "YOUR_TWITCH_APP_SECRET",
+    "target_channel": "YOUR_CHANNEL_NAME",
+    "refresh_token": "YOUR_REFRESH_TOKEN"
+  },
+  "hallucinations": ["The.", "."],
+  "erase_keyword": "not what i said",
+  "audio_input_device": null,
+  "audio_output_device": null
+}

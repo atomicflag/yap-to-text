@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+    <head>
+        <title>STT</title>
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+        }
+        #content-wrapper {
+            width: 700px;
+            height: 152px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            padding-left: 4px;
+            padding-right: 4px;
+            margin-bottom: 100px;
+        }
+        #content {
+            text-align: center;
+            width: 700px;
+        }
+        span + span::before {
+            content: ' ';
+        }
+        .transcript,
+        .preview {
+            font-family: Poppins;
+            text-shadow:
+                3px 3px 4px #000,
+                -3px 3px 4px #000,
+                -3px -3px 4px #000,
+                3px -3px 4px #000;
+            color: white;
+            font-size: 26px;
+            font-weight: 600;
+            line-height: 38px;
+            box-decoration-break: clone;
+        }
+        .preview {
+            opacity: 0.65;
+        }
+    </style>
+    <body>
+        <div id="content-wrapper"><div id="content"></div></div>
+        <script>
+            function render(data) {
+                let transcriptHtml = "";
+                const now = Date.now() / 1000; // current time in seconds
+
+                // Each segment: [timestamp, text]
+                let oldDeltas = data.segments
+                    .filter(([ts]) => {
+                        const age = now - ts;
+                        return age >= 15 && age < 30;
+                    })
+                    .map(([, text]) => text)
+                    .join(" ");
+
+                let newDeltas = data.segments
+                    .filter(([ts]) => {
+                        const age = now - ts;
+                        return age < 15;
+                    })
+                    .map(([, text]) => text)
+                    .join(" ");
+
+                if (oldDeltas)
+                    transcriptHtml += `<span class="transcript" style="opacity: 0.5;">${oldDeltas}</span>`;
+                if (newDeltas)
+                    transcriptHtml += `<span class="transcript">${newDeltas}</span>`;
+                if (data.intermediate)
+                    transcriptHtml += `<span class="transcript" style="opacity: 0.5;">${data.intermediate}</span>`;
+                if (data.is_typing) {
+                    transcriptHtml += `<span class="transcript" style="opacity: 0.5;">•••</span>`;
+                }
+
+                $("#content").html(transcriptHtml);
+            }
+            function getTranscript() {
+                $.ajax({
+                    url: "http://localhost:9098/transcript",
+                    method: "GET",
+                    dataType: "json",
+                    success: render,
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error(
+                            "Error getting transcript: ",
+                            textStatus,
+                            errorThrown,
+                        );
+                    },
+                });
+            }
+            setInterval(getTranscript, 1000);
+        </script>
+    </body>
+</html>
