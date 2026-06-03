@@ -22,7 +22,7 @@ dependencies = [
 torch = { index = "pytorch" }
 torchaudio = { index = "pytorch" }
 flash-attn = [
-  # { url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.6/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl", marker = "sys_platform == 'win32'" },
+  { url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.6/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl", marker = "sys_platform == 'win32'" },
   { url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.4/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl", marker = "sys_platform == 'linux'" },
 ]
 

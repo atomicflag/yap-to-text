@@ -3,8 +3,6 @@
 Run ``python -m stt --help`` to see all options.
 """
 
-from __future__ import annotations
-
 import logging
 import os
 import queue
@@ -84,7 +82,7 @@ class STTOrchestrator:
         if self._twitch_client is not None:
             # Twitch mode: start chat thread + browser source
             twitch_thread = threading.Thread(
-                target=self._twitch_client.run, args=(stop_event,), daemon=True
+                target=self._twitch_client.run, args=(stop_event,)
             )
             twitch_thread.start()
 
@@ -94,7 +92,7 @@ class STTOrchestrator:
         else:
             # VRC/OSC mode: start OSC input thread (no browser source)
             osc_thread = threading.Thread(
-                target=self._broadcast_manager.run, args=(stop_event,), daemon=True
+                target=self._broadcast_manager.run, args=(stop_event,)
             )
             osc_thread.start()
             twitch_thread = None
@@ -286,7 +284,7 @@ def main(
     )
 
     try:
-        streamer.run()  # renamed from start()
+        streamer.run()
     except Exception as exc:
         typer.echo(f"Error: {exc}", err=True, color=True)
         raise SystemExit(1) from exc

@@ -4,8 +4,6 @@ BroadcastManager coordinates output to all configured channels based on the
 transcription buffer state.
 """
 
-from __future__ import annotations
-
 import logging
 import threading
 import time
