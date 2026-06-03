@@ -54,7 +54,7 @@ class STTOrchestrator:
             twitch_client: Optional Twitch chat client for Twitch mode.
         """
         self.is_running = False
-        self._audio_queue = queue.Queue()
+        self._audio_queue: queue.Queue[_Chunk] = queue.Queue()
         self._broadcast_manager = broadcast_manager
         self._transcription_runner = transcription_runner
         self._twitch_client = twitch_client
@@ -136,7 +136,7 @@ class STTOrchestrator:
             except queue.Empty:
                 continue
 
-            if not isinstance(buffer, list) or len(buffer) == 0:
+            if not buffer:
                 continue
 
             # Speech still ongoing — transcribe incrementally with interval
@@ -153,27 +153,21 @@ class STTOrchestrator:
 
         while buffer[-1] is not None:
             # At this point buffer contains no None values, so concat is safe.
-            audio_arrays: list[np.ndarray] = [
-                item for item in buffer if isinstance(item, np.ndarray)
-            ]
-            self._transcription_runner.process_chunk(np.concatenate(audio_arrays))
+            self._transcription_runner.process_chunk(np.concatenate(buffer))  # type: ignore
 
             # TranscriptionRunner's internal _is_erase_keyword() cleared buffer → stop.
             if not self._transcription_runner.transcription_buffer.intermediate:
                 break  # Erase detected — skip else clause
 
             now = time.time()
-            time_to_wait = max(0, next_transcription - now)
+            time_to_wait = next_transcription - now
             if time_to_wait > 0:
                 time.sleep(time_to_wait)
             next_transcription = now + TRANSCRIPTION_INTERVAL
         else:
-            # Natural exit via None sentinel (like old code's else clause).
+            # Natural exit via None sentinel.
             # Re-transcribe any items added between last iteration and None append.
-            remaining: list[np.ndarray] = [
-                item for item in buffer[:-1] if isinstance(item, np.ndarray)
-            ]
-            self._transcription_runner.process_chunk(np.concatenate(remaining))
+            self._transcription_runner.process_chunk(np.concatenate(buffer[:-1]))  # type: ignore
 
         self._on_speech_end()
 

@@ -89,9 +89,9 @@ class BroadcastManager:
             pyperclip.copy(self.transcription_buffer.get_full())
 
         # Twitch mode → send last segment only to chat via client
-        if self.twitch_mode and self._twitch_chat is not None:
+        if self.twitch_mode and self._twitch_chat:
             text = self.transcription_buffer.last()
-            if text is not None:
+            if text:
                 self._twitch_chat.send_message(text)
             return
 
