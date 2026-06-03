@@ -10,7 +10,7 @@ from twitchAPI.oauth import UserAuthenticator, refresh_access_token
 from twitchAPI.twitch import Twitch
 from twitchAPI.type import AuthScope, ChatEvent
 
-from stt.config import TwitchConfig, load_config, save_config
+from ytt.config import TwitchConfig, load_config, save_config
 
 logger = logging.getLogger(__name__)
 

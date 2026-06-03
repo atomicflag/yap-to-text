@@ -1,6 +1,6 @@
-# qwen-asr-vrc
+# Yap To Text
 
-Real-time speech-to-text captions for VRChat and Twitch, powered by Qwen3-ASR.
+Real-time captions for VRChat and Twitch, powered by Qwen3-ASR.
 
 Turn your voice into text displayed inside VRChat's chatbox, or send transcriptions to a Twitch channel — no typing required.
 
@@ -9,9 +9,8 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 
 ## Features
 
-- **Live VRChat captions** — sends real-time (and final) transcriptions directly to VRC's in-game chatbox via OSC
+- **Live VRChat captions** — sends real-time transcriptions directly to VRC's in-game chatbox via OSC
 - **Twitch mode** — stream your own live captions to Twitch chat instead (`--twitch`)
-- **Intermediate text** — see words appear as they're recognized, before speech ends
 - **OBS browser source** — built-in web server serves live subtitles for OBS Studio overlays (run with `--twitch`)
 - **Clipboard copy** — dump full transcriptions to your clipboard (`--clipboard`)
 - **Hallucination & erase detection** — filters ASR hallucinations and clears the buffer on an erase keyword
@@ -31,8 +30,8 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 
 ```bash
 # Clone the repo
-git clone https://github.com/atomicflag/qwen-asr-vrc.git
-cd qwen-asr-vrc
+git clone https://github.com/atomicflag/yap-to-text.git
+cd yap-to-text
 
 # Create a virtual environment and install dependencies
 uv sync
@@ -82,7 +81,7 @@ Default mode sends text to VRChat's chatbox over localhost OSC. Just make sure V
 ### VRChat mode (default)
 
 ```bash
-uv run python -m stt
+uv run python -m ytt
 ```
 
 Transcriptions appear in VRC's chatbox in real-time.
@@ -90,7 +89,7 @@ Transcriptions appear in VRC's chatbox in real-time.
 ### Twitch mode
 
 ```bash
-uv run python -m stt --twitch
+uv run python -m ytt --twitch
 ```
 
 Sends final transcriptions to Twitch chat and serves live captions via a local web server (port `9098`) for OBS browser source. A blip sound plays when each speech segment ends.
@@ -103,7 +102,7 @@ To add the OBS browser source:
 ### Clipboard mode (works with either VRChat or Twitch)
 
 ```bash
-uv run python -m stt --clipboard    # or --twitch --clipboard
+uv run python -m ytt --clipboard    # or --twitch --clipboard
 ```
 
 Copies the full running transcription to your system clipboard whenever a segment is finalized.
@@ -111,7 +110,7 @@ Copies the full running transcription to your system clipboard whenever a segmen
 
 ## Options
 
-Run `uv run python -m stt --help` to see all available command-line flags:
+Run `uv run python -m ytt --help` to see all available command-line flags:
 
 | Flag | Description |
 |---|---|

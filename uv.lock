@@ -1681,58 +1681,6 @@ wheels = [
 ]
 
 [[package]]
-name = "qwen-asr-vrc"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "cuda-python", version = "12.9.7", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux'" },
-    { name = "cuda-python", version = "13.3.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux'" },
-    { name = "fastapi", extra = ["standard"] },
-    { name = "flash-attn", version = "2.8.3", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "flash-attn", version = "2.8.3+cu128torch2.11", source = { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl" }, marker = "sys_platform == 'linux'" },
-    { name = "flash-attn", version = "2.8.3+cu128torch2.11", source = { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
-    { name = "pyperclip" },
-    { name = "python-osc" },
-    { name = "qwen-asr" },
-    { name = "sounddevice" },
-    { name = "torch" },
-    { name = "torchaudio" },
-    { name = "twitchapi" },
-    { name = "typer" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "mypy" },
-    { name = "ruff" },
-    { name = "ty" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cuda-python", specifier = ">=12.3" },
-    { name = "fastapi", extras = ["standard"], specifier = "~=0.121" },
-    { name = "flash-attn", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "flash-attn", marker = "sys_platform == 'linux'", path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl" },
-    { name = "flash-attn", marker = "sys_platform == 'win32'", path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" },
-    { name = "pyperclip", specifier = "~=1.11" },
-    { name = "python-osc", specifier = "~=1.9" },
-    { name = "qwen-asr", specifier = ">=0.0.6" },
-    { name = "sounddevice", specifier = "~=0.5" },
-    { name = "torch", specifier = "~=2.11.0", index = "https://download.pytorch.org/whl/cu129" },
-    { name = "torchaudio", specifier = "~=2.11.0", index = "https://download.pytorch.org/whl/cu129" },
-    { name = "twitchapi", specifier = "~=4.5" },
-    { name = "typer", specifier = "~=0.15" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy", specifier = ">=2.1.0" },
-    { name = "ruff", specifier = ">=0.14.3" },
-    { name = "ty", specifier = ">=0.0.40" },
-]
-
-[[package]]
 name = "qwen-omni-utils"
 version = "0.0.9"
 source = { registry = "https://pypi.org/simple" }
@@ -2393,6 +2341,58 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/dd/b2/381be8cfdee792dd117872481b6e378f85c957dd7c5bca38897b08f765fd/werkzeug-3.1.8.tar.gz", hash = "sha256:9bad61a4268dac112f1c5cd4630a56ede601b6ed420300677a869083d70a4c44", size = 875852, upload-time = "2026-04-02T18:49:14.268Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/93/8c/2e650f2afeb7ee576912636c23ddb621c91ac6a98e66dc8d29c3c69446e1/werkzeug-3.1.8-py3-none-any.whl", hash = "sha256:63a77fb8892bf28ebc3178683445222aa500e48ebad5ec77b0ad80f8726b1f50", size = 226459, upload-time = "2026-04-02T18:49:12.72Z" },
+]
+
+[[package]]
+name = "yap-to-text"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "cuda-python", version = "12.9.7", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux'" },
+    { name = "cuda-python", version = "13.3.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux'" },
+    { name = "fastapi", extra = ["standard"] },
+    { name = "flash-attn", version = "2.8.3", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "flash-attn", version = "2.8.3+cu128torch2.11", source = { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl" }, marker = "sys_platform == 'linux'" },
+    { name = "flash-attn", version = "2.8.3+cu128torch2.11", source = { path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "pyperclip" },
+    { name = "python-osc" },
+    { name = "qwen-asr" },
+    { name = "sounddevice" },
+    { name = "torch" },
+    { name = "torchaudio" },
+    { name = "twitchapi" },
+    { name = "typer" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "mypy" },
+    { name = "ruff" },
+    { name = "ty" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cuda-python", specifier = ">=12.3" },
+    { name = "fastapi", extras = ["standard"], specifier = "~=0.121" },
+    { name = "flash-attn", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "flash-attn", marker = "sys_platform == 'linux'", path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl" },
+    { name = "flash-attn", marker = "sys_platform == 'win32'", path = "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" },
+    { name = "pyperclip", specifier = "~=1.11" },
+    { name = "python-osc", specifier = "~=1.9" },
+    { name = "qwen-asr", specifier = ">=0.0.6" },
+    { name = "sounddevice", specifier = "~=0.5" },
+    { name = "torch", specifier = "~=2.11.0", index = "https://download.pytorch.org/whl/cu129" },
+    { name = "torchaudio", specifier = "~=2.11.0", index = "https://download.pytorch.org/whl/cu129" },
+    { name = "twitchapi", specifier = "~=4.5" },
+    { name = "typer", specifier = "~=0.15" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy", specifier = ">=2.1.0" },
+    { name = "ruff", specifier = ">=0.14.3" },
+    { name = "ty", specifier = ">=0.0.40" },
 ]
 
 [[package]]

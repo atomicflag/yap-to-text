@@ -1,6 +1,6 @@
-"""CLI entry point for Qwen-ASR VR Chat.
+"""CLI entry point for Yap To Text.
 
-Run ``python -m stt --help`` to see all options.
+Run ``uv run python -m ytt --help`` to see all options.
 """
 
 import logging
@@ -15,25 +15,25 @@ import sounddevice as sd
 import typer
 from transformers import logging as trans_logging
 
-from stt.audio import SAMPLE_RATE, AudioProcessor, _Chunk
-from stt.broadcast import BroadcastManager
-from stt.config import load_config
-from stt.obs import app as browser_app
-from stt.obs import run_server as _run_browser_server
-from stt.obs import server as browser_server
-from stt.transcription import (
+from ytt.audio import SAMPLE_RATE, AudioProcessor, _Chunk
+from ytt.broadcast import BroadcastManager
+from ytt.config import load_config
+from ytt.obs import app as browser_app
+from ytt.obs import run_server as _run_browser_server
+from ytt.obs import server as browser_server
+from ytt.transcription import (
     TRANSCRIPTION_INTERVAL,
     TranscriptionBuffer,
     TranscriptionRunner,
 )
-from stt.twitch import TwitchChatClient
+from ytt.twitch import TwitchChatClient
 
 logger = logging.getLogger(__name__)
 trans_logging.set_verbosity_error()
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
-app = typer.Typer(help="VRChat speech-to-text (STT) via Qwen-ASR")
+app = typer.Typer(help="Yap To Text — real-time captions for VRChat and Twitch")
 
 
 class STTOrchestrator:
@@ -68,7 +68,7 @@ class STTOrchestrator:
 
     def run(self) -> None:
         """Start capturing audio and processing transcriptions."""
-        logger.info("Starting VRChat Speech-to-Text...")
+        logger.info("Starting Yap To Text...")
 
         self.is_running = True
 
@@ -218,7 +218,7 @@ def main(
         help="Path to config.json (default: current directory)",
     ),
 ) -> None:
-    """Start VRChat speech-to-text.
+    """Yap To Text — real-time captions for VRChat and Twitch.
 
     In default mode, results are sent to VRC via OSC text boxes.
     With `--twitch`, results are sent to Twitch chat instead.
