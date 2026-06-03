@@ -14,8 +14,8 @@ import sounddevice as sd
 import soundfile as sf
 from pythonosc import udp_client
 
-from stt.transcription import TranscriptionBuffer
-from stt.twitch import TwitchChatClient
+from ytt.transcription import TranscriptionBuffer
+from ytt.twitch import TwitchChatClient
 
 logger = logging.getLogger(__name__)
 
