@@ -113,7 +113,29 @@ class AudioProcessor:
         time_info: dict,  # type: ignore[type-arg]
         status: sd.CallbackFlags,
     ) -> None:
-        """Sounddevice callback invoked for each audio block."""
+        """Sounddevice callback invoked for each audio block.
+
+        Algorithm — two-pass speech boundary detection with trailing-edge hysteresis:
+
+        1. **VAD scoring**: The Silero VAD model scores the frame's speech probability;
+           a sliding-window average over the last ``MIN_SPEECH_FRAMES`` frames is
+           maintained in ``self.speech_probability``.
+
+        2. **State machine** — two states (idle / detecting):
+
+           *Idle* (no active segment): every frame is buffered in
+           ``pre_speech_buffer`` so we can backfill audio captured just before the
+           user spoke. When the rolling VAD score crosses ``SENSITIVITY``, the idle
+           state transitions to *detecting* and ``_on_speech_started`` fires.
+
+           *Detecting*: frames are appended to the main ``speech_buffer`` as long as
+           the rolling VAD stays above a **higher** threshold, ``SILENCE_SENSITIVITY``.
+           This hysteresis prevents the segment from flipping on and off in noisy or
+           marginal audio. If silence (below ``SILENCE_SENSITIVITY``) persists for
+           more than ``MAX_SILENCE_FRAMES``, we end the segment:
+           a ``None`` sentinel is appended to mark completion, ``_on_speech_ended``
+           fires, and the state machine returns to *idle*.
+        """
         if status:
             logger.warning("Audio callback status: %s", status)
 
