@@ -6,7 +6,6 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 
 **Status:** Beta · Requires an NVIDIA GPU with 8+ GB VRAM
 
----
 
 ## Features
 
@@ -17,7 +16,6 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 - **Clipboard copy** — dump full transcriptions to your clipboard (`--clipboard`)
 - **Hallucination & erase detection** — filters ASR hallucinations and clears the buffer on an erase keyword
 
----
 
 ## System Requirements
 
@@ -28,7 +26,6 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 | Python | 3.12 |
 | Package manager | [uv](https://docs.astral.sh/uv/) |
 
----
 
 ## Installation
 
@@ -45,7 +42,6 @@ That's it — `uv` resolves everything including the PyTorch and flash-attn whee
 
 > **Note:** If you're not familiar with Python or the uv ecosystem, see [uv getting started](https://docs.astral.sh/uv/getting-started/) for a quick intro.
 
----
 
 ## Configuration (optional)
 
@@ -80,7 +76,6 @@ Default mode sends text to VRChat's chatbox over localhost OSC. Just make sure V
 }
 ```
 
----
 
 ## Usage
 
@@ -113,7 +108,6 @@ uv run python -m stt --clipboard    # or --twitch --clipboard
 
 Copies the full running transcription to your system clipboard whenever a segment is finalized.
 
----
 
 ## Options
 
@@ -124,8 +118,6 @@ Run `uv run python -m stt --help` to see all available command-line flags:
 | `--twitch` | Enable Twitch chat mode (sends to Twitch instead of VRC) |
 | `--clipboard` | Copy final transcriptions to the system clipboard |
 | `--config PATH` | Custom path to `config.json` (default: `config.json`) |
-
----
 
 ## License
 

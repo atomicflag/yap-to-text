@@ -75,28 +75,33 @@ class STTOrchestrator:
         # Shared stop event — controls whichever thread is running (Twitch or OSC)
         stop_event = threading.Event()
 
-        # Start processing thread
+        # Collect all threads before starting any of them
+        threads: list[threading.Thread] = []
+
+        # Processing thread (always present)
         processing_thread = threading.Thread(target=self._process_loop)
-        processing_thread.start()
+        threads.append(processing_thread)
 
         if self._twitch_client is not None:
-            # Twitch mode: start chat thread + browser source
+            # Twitch mode: chat thread + browser source
             twitch_thread = threading.Thread(
                 target=self._twitch_client.run, args=(stop_event,)
             )
-            twitch_thread.start()
+            threads.append(twitch_thread)
 
             browser_app.state.broadcast_manager = self._broadcast_manager
             browser_source_thread = threading.Thread(target=_run_browser_server)
-            browser_source_thread.start()
+            threads.append(browser_source_thread)
         else:
-            # VRC/OSC mode: start OSC input thread (no browser source)
+            # VRC/OSC mode: OSC input thread only
             osc_thread = threading.Thread(
                 target=self._broadcast_manager.run, args=(stop_event,)
             )
-            osc_thread.start()
-            twitch_thread = None
-            browser_source_thread = None
+            threads.append(osc_thread)
+
+        # Start all threads uniformly
+        for t in threads:
+            t.start()
 
         # Start audio capture
         try:
@@ -109,12 +114,7 @@ class STTOrchestrator:
         except KeyboardInterrupt:
             logger.info("Shutting down all threads...")
         finally:
-            self._cleanup(
-                processing_thread=processing_thread,
-                twitch_thread=twitch_thread,
-                browser_source_thread=browser_source_thread,
-                stop_event=stop_event,
-            )
+            self._cleanup(threads, stop_event)
 
     def _on_audio_chunk(self, chunk_list: _Chunk) -> None:
         """Receive a chunk of audio from the AudioProcessor.
@@ -194,26 +194,20 @@ class STTOrchestrator:
 
     def _cleanup(
         self,
-        *,
-        processing_thread: threading.Thread,
-        twitch_thread: threading.Thread | None,
-        browser_source_thread: threading.Thread | None,
+        threads: list[threading.Thread],
         stop_event: threading.Event,
     ) -> None:
         """Gracefully shut down all components."""
         self.is_running = False
         self._audio_processor.stop()
 
-        processing_thread.join()
-
-        # Signal the shared stop event — stops whichever thread is running
+        # Signal the shared stop event — stops whichever mode-thread is running
         stop_event.set()
 
-        if twitch_thread is not None:
-            logger.debug("Stopping browser source thread")
-            browser_server.should_exit = True
-            if browser_source_thread is not None:
-                browser_source_thread.join()
+        browser_server.should_exit = True
+
+        for t in threads:
+            t.join()
 
         logger.info("All threads stopped, exiting.")
 
