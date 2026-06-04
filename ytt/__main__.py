@@ -143,47 +143,23 @@ class STTOrchestrator:
             self._process_ongoing_speech(buffer)
 
     def _process_ongoing_speech(self, buffer: _Chunk) -> None:
-        """Handle speech that's still ongoing (accumulate and transcribe).
-
-        Uses while/else pattern:
-        - `break` from erase detected → skips else clause entirely
-        - condition becomes False (None sentinel) → runs else clause with re-transcription
-        """
+        """Handle speech that's still ongoing (accumulate and transcribe)."""
         next_transcription = time.time() + TRANSCRIPTION_INTERVAL
 
         while buffer[-1] is not None:
             # At this point buffer contains no None values, so concat is safe.
-            self._transcription_runner.process_chunk(np.concatenate(buffer))  # type: ignore
-
-            # TranscriptionRunner's internal _is_erase_keyword() cleared buffer → stop.
-            if not self._transcription_runner.transcription_buffer.intermediate:
-                break  # Erase detected — skip else clause
-
+            chunk = np.concatenate(buffer)  # type: ignore
+            if self._transcription_runner.process_chunk(chunk):
+                return
             now = time.time()
             time_to_wait = next_transcription - now
             if time_to_wait > 0:
                 time.sleep(time_to_wait)
             next_transcription = now + TRANSCRIPTION_INTERVAL
-        else:
-            # Natural exit via None sentinel.
-            # Re-transcribe any items added between last iteration and None append.
-            self._transcription_runner.process_chunk(np.concatenate(buffer[:-1]))  # type: ignore
-
-        self._on_speech_end()
-
-    def _on_speech_end(self) -> None:
-        """Handle the end of a speech segment.
-
-        TranscriptionRunner's internal _is_erase_keyword() handles erase detection
-        mid-stream. This method delegates commit logic and notifies broadcast manager.
-        """
-        # If TranscriptionRunner already cleared buffer on erase detection,
-        # intermediate will be empty → no commit needed.
-        if not self._transcription_runner.transcription_buffer.intermediate:
+        # Re-transcribe any items added between last iteration and None append.
+        chunk = np.concatenate(buffer[:-1])  # type: ignore
+        if self._transcription_runner.process_chunk(chunk):
             return
-
-        # Commit to buffer, then notify broadcast manager (which selects text
-        # based on mode: .last() for Twitch, .get() for OSC, .get_full() for clipboard)
         self._transcription_runner.commit_segment()
 
     def _cleanup(

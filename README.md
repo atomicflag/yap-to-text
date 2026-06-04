@@ -4,8 +4,6 @@ Real-time captions for VRChat and Twitch, powered by Qwen3-ASR.
 
 Turn your voice into text displayed inside VRChat's chatbox, or send transcriptions to a Twitch channel — no typing required.
 
-**Status:** Beta · Requires an NVIDIA GPU with 8+ GB VRAM
-
 
 ## Features
 
