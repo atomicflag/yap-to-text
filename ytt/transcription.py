@@ -172,7 +172,7 @@ class TranscriptionRunner:
         self._on_intermediate: Callable[[], None] = on_intermediate
         self._on_erase: Callable[[], None] = on_erase
 
-    def process_chunk(self, audio_array: np.ndarray) -> None:
+    def process_chunk(self, audio_array: np.ndarray) -> bool:
         """Process a single audio chunk through the ASR model.
 
         Args:
@@ -192,27 +192,27 @@ class TranscriptionRunner:
                 len(new_text) == 2 and new_text[1] == "."
             ):
                 logger.debug("Dropping hallucinated transcription: %r", new_text)
-                return
+                return False
 
             if not new_text:
-                return
-
-            # Push to buffer
-            self.transcription_buffer.push(new_text)
+                return False
 
             # Check erase keyword before notifying — fires after push so buffer
             # reflects current state; on_erase clears intermediate when detected
-            if self._is_erase_keyword():
-                return
+            if self._is_erase_keyword(new_text):
+                return True
 
+            # Push to buffer
+            self.transcription_buffer.push(new_text)
             self._on_intermediate()
-
         except Exception:
             logger.exception("Error transcribing")
+        return False
 
     def commit_segment(self) -> None:
         """Commit the current intermediate text as a final segment."""
         if not self.transcription_buffer.intermediate:
+            self._on_intermediate()
             return
 
         self.transcription_buffer.commit()
@@ -226,7 +226,7 @@ class TranscriptionRunner:
         # and selects .last() (Twitch), .get() (OSC), or .get_full() (clipboard)
         self._on_commit()
 
-    def _is_erase_keyword(self) -> bool:
+    def _is_erase_keyword(self, text: str) -> bool:
         """Check if the intermediate text matches the configured erase keyword.
 
         Clears the transcription buffer and fires the ``on_erase`` callback
@@ -235,7 +235,7 @@ class TranscriptionRunner:
         Returns:
             True if the erase keyword was detected, False otherwise.
         """
-        cleaned: str = self.transcription_buffer.intermediate.lower().strip(".")
+        cleaned: str = text.lower().strip(".")
         if cleaned == self.erase_keyword:
             logger.info("Erase keyword detected — clearing buffer.")
             self.transcription_buffer.clear()

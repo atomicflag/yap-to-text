@@ -28,7 +28,7 @@ flash-attn = [
 
 [[tool.uv.index]]
 name = "pytorch"
-url = "https://download.pytorch.org/whl/cu129"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [dependency-groups]
