@@ -193,6 +193,9 @@ def main(
         "--config",
         help="Path to config.json (default: current directory)",
     ),
+    verbose: int = typer.Option(
+        0, "--verbose", "-v", count=True, help="Increase log verbosity"
+    ),
 ) -> None:
     """Yap To Text — real-time captions for VRChat and Twitch.
 
@@ -200,6 +203,8 @@ def main(
     With `--twitch`, results are sent to Twitch chat instead.
     Add `--clipboard` to also copy transcriptions to the system clipboard.
     """
+    level = logging.INFO - (10 * min(verbose, 2))
+    logging.getLogger().setLevel(level)
     config = load_config(Path(config_path))
 
     # Apply audio device settings from config (if configured)
