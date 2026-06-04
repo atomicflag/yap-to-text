@@ -155,6 +155,7 @@ class BroadcastManager:
         """
         while not stop.is_set():
             if self._osc_text is not None:
+                logger.debug("OSC: %s", self._osc_text)
                 if self._osc:
                     self._osc.send_message("/chatbox/input", [self._osc_text, True])
                 self._osc_text = None
