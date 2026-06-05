@@ -81,16 +81,15 @@ class TranscriptionBuffer:
             Truncated transcription text with an ellipsis if needed.
 
         """
+        if (time.time() - self._last_update) > self.reset_timeout:
+            self._text = ""
         text: str = (self._text + " " + self.intermediate).strip()
 
         if self.intermediate:
             text = text.rstrip(string.punctuation)
             text += "\u22ef"
         elif force_typing:
-            if (time.time() - self._last_update) > self.reset_timeout:
-                text = "\u22ef"
-            else:
-                text += " \u22ef"
+            text = (text + " \u22ef").strip()
 
         if len(text) <= self.max_chars:
             return text
