@@ -20,6 +20,7 @@ class Config(BaseModel):
     twitch: TwitchConfig | None = None
     hallucinations: list[str] = Field(default_factory=lambda: ["The.", "."])
     erase_keyword: str = "not what i said"
+    replacements: dict[str, str] = Field(default_factory=dict)
     audio_input_device: str | None = None
     audio_output_device: str | None = None
 

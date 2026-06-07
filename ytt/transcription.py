@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import re
 import string
 import time
 from collections.abc import Callable
@@ -138,6 +139,7 @@ class TranscriptionRunner:
         transcription_buffer: TranscriptionBuffer,
         hallucinations: list[str],
         erase_keyword: str,
+        replacements: dict[str, str],
         on_commit: Callable[[], None],
         on_intermediate: Callable[[], None],
         on_erase: Callable[[], None],
@@ -148,6 +150,7 @@ class TranscriptionRunner:
             transcription_buffer: Shared buffer for accumulating transcriptions.
             hallucinations: Strings to drop as ASR hallucinations.
             erase_keyword: Phrase that triggers a buffer clear when detected.
+            replacements: Mapping of phrases to auto-correct (key → value).
             on_commit: Callback fired when a segment is committed
             on_intermediate: Callback fired with intermediate updates
             on_erase: Callback fired when erase keyword is detected.
@@ -167,9 +170,29 @@ class TranscriptionRunner:
 
         self.hallucinations: list[str] = hallucinations
         self.erase_keyword: str = erase_keyword
+        self._replacements: dict[str, str] = replacements
         self._on_commit: Callable[[], None] = on_commit
         self._on_intermediate: Callable[[], None] = on_intermediate
         self._on_erase: Callable[[], None] = on_erase
+
+    def _apply_replacements(self, text: str) -> str:
+        """Apply configured phrase replacements (case-insensitive).
+
+        Iterates over each replacement pair and replaces all occurrences of the
+        key with the corresponding value.  Matching is case-insensitive so that
+        "BIG SAID", "Big Said", and "big said" all get corrected.
+
+        Args:
+            text: The original ASR transcription.
+
+        Returns:
+            Text with all configured replacements applied.
+
+        """
+        for pattern, replacement in self._replacements.items():
+            escaped = re.escape(pattern)
+            text = re.sub(escaped, replacement, text, flags=re.IGNORECASE)
+        return text
 
     def process_chunk(self, audio_array: np.ndarray) -> bool:
         """Process a single audio chunk through the ASR model.
@@ -185,6 +208,9 @@ class TranscriptionRunner:
             )
 
             new_text: str = result[0].text.strip()
+
+            # Apply user-defined replacements before any other processing
+            new_text = self._apply_replacements(new_text)
 
             # Filter hallucinations
             if (new_text in self.hallucinations) or (

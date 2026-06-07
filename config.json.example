@@ -1,5 +1,9 @@
 # Copy this file to config.json and fill in your actual values.
 # config.json is gitignored — never commit it with real secrets.
+#
+# "replacements" lets you fix common ASR mistakes (e.g. "big said" → "big sad").
+# Add key/value pairs where the key is what ASR produces and the value is
+# what you want to see instead. Replacements are applied case-insensitively.
 
 {
   "twitch": {
@@ -10,6 +14,7 @@
   },
   "hallucinations": ["The.", "."],
   "erase_keyword": "not what i said",
+  "replacements": {},
   "audio_input_device": null,
   "audio_output_device": null
 }

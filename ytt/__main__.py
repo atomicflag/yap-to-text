@@ -240,6 +240,7 @@ def main(
         transcription_buffer=transcription_buffer,
         hallucinations=config.hallucinations,
         erase_keyword=config.erase_keyword,
+        replacements=config.replacements,
         on_commit=broadcast_manager.on_commit,
         on_intermediate=broadcast_manager.on_intermediate,
         on_erase=broadcast_manager.on_erase,
