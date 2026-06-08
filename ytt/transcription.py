@@ -138,7 +138,7 @@ class TranscriptionRunner:
         *,
         transcription_buffer: TranscriptionBuffer,
         hallucinations: list[str],
-        erase_keyword: str,
+        erase_keyword: str | None,
         replacements: dict[str, str],
         on_commit: Callable[[], None],
         on_intermediate: Callable[[], None],
@@ -169,7 +169,7 @@ class TranscriptionRunner:
         )
 
         self.hallucinations: list[str] = hallucinations
-        self.erase_keyword: str = erase_keyword
+        self.erase_keyword: str | None = erase_keyword
         self._replacements: dict[str, str] = replacements
         self._on_commit: Callable[[], None] = on_commit
         self._on_intermediate: Callable[[], None] = on_intermediate
@@ -224,7 +224,7 @@ class TranscriptionRunner:
 
             # Check erase keyword before notifying — fires after push so buffer
             # reflects current state; on_erase clears intermediate when detected
-            if self._is_erase_keyword(new_text):
+            if self.erase_keyword and self._is_erase_keyword(new_text):
                 return True
 
             # Push to buffer
