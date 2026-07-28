@@ -14,6 +14,7 @@ dependencies = [
   "sounddevice~=0.5",
   "pyperclip~=1.11",
   "qwen-asr>=0.0.6",
+  "numba>=0.59",
   "flash-attn",
   "typer~=0.15",
   "bitsandbytes>=0.50.0",
