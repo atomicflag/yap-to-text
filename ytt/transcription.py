@@ -10,6 +10,7 @@ from collections.abc import Callable
 import numpy as np
 import torch
 from qwen_asr import Qwen3ASRModel
+from transformers import BitsAndBytesConfig
 
 from .audio import SAMPLE_RATE
 
@@ -158,14 +159,21 @@ class TranscriptionRunner:
         """
         self.transcription_buffer = transcription_buffer
 
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+            bnb_4bit_use_double_quant=True,
+        )
         # Load ASR model (heavy — done once at construction)
         self.transcriber = Qwen3ASRModel.from_pretrained(
             "Qwen/Qwen3-ASR-1.7B",
             dtype=torch.bfloat16,
             device_map="cuda:0",
             attn_implementation="flash_attention_2",
-            max_inference_batch_size=32,
+            max_inference_batch_size=1,
             max_new_tokens=256,
+            quantization_config=bnb_config,
         )
 
         self.hallucinations: list[str] = hallucinations

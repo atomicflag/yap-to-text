@@ -1,6 +1,6 @@
 [project]
 name = "yap-to-text"
-version = "0.1.0"
+version = "0.2.0"
 description = "Yap To Text — real-time transcription for VRChat and Twitch, powered by Qwen-ASR"
 readme = "README.md"
 requires-python = "~=3.12.0"
@@ -16,6 +16,7 @@ dependencies = [
   "qwen-asr>=0.0.6",
   "flash-attn",
   "typer~=0.15",
+  "bitsandbytes>=0.50.0",
 ]
 
 [tool.uv.sources]
