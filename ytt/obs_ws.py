@@ -77,7 +77,7 @@ class ObsWsClient:
                     self._conn = create_connection(url, timeout=5)
                     self._conn.send(payload)
                     logger.info("Connected to OBS WebSocket at %s", url)
-                except WebSocketException as exc:
+                except (WebSocketException, OSError) as exc:
                     logger.warning(
                         "OBS WebSocket connection failed (%d/%d): %s",
                         self._retry_count,
