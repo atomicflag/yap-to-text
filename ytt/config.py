@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import commentjson
 from pydantic import BaseModel, Field
 
 
@@ -15,7 +16,7 @@ class TwitchConfig(BaseModel):
 
 
 class Config(BaseModel):
-    """Application configuration loaded from config.json."""
+    """Application configuration loaded from config.jsonc."""
 
     twitch: TwitchConfig | None = None
     hallucinations: list[str] = Field(default_factory=lambda: ["The.", "."])
@@ -27,14 +28,14 @@ class Config(BaseModel):
     obs_ws_port: int = 4444
 
 
-def load_config(path: Path = Path("config.json")) -> Config:
-    """Load and validate configuration from a JSON file.
+def load_config(path: Path = Path("config.jsonc")) -> Config:
+    """Load and validate configuration from a JSONC file.
 
     If the config file does not exist, returns a Config instance with all
     default values (twitch disabled, built-in hallucinations/erase_keyword).
 
     Args:
-        path: Path to the config.json file. Defaults to current directory.
+        path: Path to the config.jsonc file. Defaults to current directory.
 
     Returns:
         Validated Config instance.
@@ -43,17 +44,18 @@ def load_config(path: Path = Path("config.json")) -> Config:
     if not path.exists():
         return Config()
 
-    data = path.read_text(encoding="utf-8")
-    return Config.model_validate_json(data)
+    with path.open("r", encoding="utf-8") as fp:
+        data = commentjson.load(fp)
+    return Config.model_validate(data)
 
 
 def save_config(config: Config, path: Path) -> None:
-    """Save a Config instance to a JSON file.
+    """Save a Config instance to a JSONC file.
 
     Args:
         config: The validated configuration to write.
-        path: File path to write JSON to.
+        path: File path to write JSONC to.
 
     """
-    json_str = config.model_dump_json(indent=2)
-    path.write_text(json_str + "\n", encoding="utf-8")
+    with path.open("w", encoding="utf-8") as fp:
+        commentjson.dump(config.model_dump(), fp, indent=2)

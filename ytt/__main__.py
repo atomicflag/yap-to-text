@@ -196,9 +196,9 @@ def main(
         False, "--clipboard", help="Copy completed transcriptions to clipboard"
     ),
     config_path: str = typer.Option(
-        "config.json",
+        "config.jsonc",
         "--config",
-        help="Path to config.json (default: current directory)",
+        help="Path to config.jsonc (default: current directory)",
     ),
     verbose: int = typer.Option(
         0, "--verbose", "-v", count=True, help="Increase log verbosity"

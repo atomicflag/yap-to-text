@@ -1,5 +1,5 @@
-# Copy this file to config.json and fill in your actual values.
-# config.json is gitignored — never commit it with real secrets.
+# Copy this file to config.jsonc and fill in your actual values.
+# config.jsonc is gitignored — never commit it with real secrets.
 #
 # "replacements" lets you fix common ASR mistakes (e.g. "big said" → "big sad").
 # Add key/value pairs where the key is what ASR produces and the value is

@@ -25,7 +25,7 @@ class TwitchChatClient:
         app_secret: str,
         refresh_token: str | None,
         target_channel: str,
-        config_path: Path = Path("config.json"),
+        config_path: Path = Path("config.jsonc"),
     ) -> None:
         """Initialize the Twitch chat client.
 
@@ -34,7 +34,7 @@ class TwitchChatClient:
             app_secret: Twitch application secret.
             refresh_token: OAuth refresh token (None for first-time interactive auth).
             target_channel: The Twitch channel to send messages to.
-            config_path: Path to the config file for saving tokens.
+            config_path: Path to the config.jsonc file for saving tokens.
         """
         self._app_id = app_id
         self._app_secret = app_secret

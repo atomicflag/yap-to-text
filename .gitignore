@@ -10,7 +10,7 @@ __pycache__/
 *.so
 
 # Config with secrets (never commit)
-config.json
+config.jsonc
 
 # IDE
 .vscode/

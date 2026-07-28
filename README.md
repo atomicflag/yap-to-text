@@ -45,7 +45,7 @@ That's it — `uv` resolves everything including the PyTorch and flash-attn whee
 Copy the example config and fill in your values:
 
 ```bash
-cp config.json.example config.json
+cp config.jsonc.example config.jsonc
 ```
 
 ### VRChat (OSC) mode — no extra setup needed
@@ -56,7 +56,7 @@ Default mode sends text to VRChat's chatbox over localhost OSC. Just make sure V
 
 1. [Register an app](https://dev.twitch.tv/docs/authentication/register-app) on the Twitch Developer Console
 2. Note your **Client ID** and **Client Secret**
-3. Add them to `config.json` under `twitch`, along with your channel name
+3. Add them to `config.jsonc` under `twitch`, along with your channel name
 4. On first run with `--twitch`, a browser window opens for OAuth authorization — grant permissions and you're done
 
 ```jsonc
@@ -103,7 +103,7 @@ To display captions in OBS, add a Browser source:
 
 YTT can optionally send each completed caption to OBS Studio via the [OBS WebSocket plugin](https://github.com/obsproject/obs-websocket) `SendCaptions` API, which embeds them as CEA-608 closed captions into your stream. Twitch viewers can then toggle CC on/off. This is optional — if OBS isn't running, the connection fails silently with a warning and the rest of the app continues normally.
 
-To enable: install the OBS WebSocket plugin, enable the WebSocket server in **Tools → WebSocket Server Settings** (default port `4444`). The host and port can be configured in `config.json` via `obs_ws_host` and `obs_ws_port`.
+To enable: install the OBS WebSocket plugin, enable the WebSocket server in **Tools → WebSocket Server Settings** (default port `4444`). The host and port can be configured in `config.jsonc` via `obs_ws_host` and `obs_ws_port`.
 
 ### Clipboard mode (works with either VRChat or Twitch)
 
@@ -122,7 +122,7 @@ Run `uv run python -m ytt --help` to see all available command-line flags:
 |---|---|
 | `--twitch` | Enable Twitch chat mode (sends to Twitch instead of VRC) |
 | `--clipboard` | Copy final transcriptions to the system clipboard |
-| `--config PATH` | Custom path to `config.json` (default: `config.json`) |
+| `--config PATH` | Custom path to `config.jsonc` (default: `config.jsonc`) |
 
 ## License
 
