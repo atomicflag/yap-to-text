@@ -16,5 +16,7 @@
   "erase_keyword": "not what i said",
   "replacements": {},
   "audio_input_device": null,
-  "audio_output_device": null
+  "audio_output_device": null,
+  "obs_ws_host": "localhost",
+  "obs_ws_port": 4444
 }

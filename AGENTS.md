@@ -48,7 +48,8 @@ For a change to be considered **successful**, it **must pass both** of the follo
 
 ```bash
 ruff check --fix .
-ty check .
+pyrefly check .
+vulture .
 ```
 
 If either command reports errors or warnings, the change is not complete and must be fixed before submission.

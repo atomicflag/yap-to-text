@@ -92,10 +92,18 @@ uv run python -m ytt --twitch
 
 Sends final transcriptions to Twitch chat and serves live captions via a local web server (port `9098`) for OBS browser source. A blip sound plays when each speech segment ends.
 
-To add the OBS browser source:
+#### OBS browser source
+
+To display captions in OBS, add a Browser source:
 1. Open OBS → Sources → Browser
 2. Set URL to `http://localhost:9098`
 3. Adjust width/height as needed
+
+#### Optional: OBS WebSocket closed captions
+
+YTT can optionally send each completed caption to OBS Studio via the [OBS WebSocket plugin](https://github.com/obsproject/obs-websocket) `SendCaptions` API, which embeds them as CEA-608 closed captions into your stream. Twitch viewers can then toggle CC on/off. This is optional — if OBS isn't running, the connection fails silently with a warning and the rest of the app continues normally.
+
+To enable: install the OBS WebSocket plugin, enable the WebSocket server in **Tools → WebSocket Server Settings** (default port `4444`). The host and port can be configured in `config.json` via `obs_ws_host` and `obs_ws_port`.
 
 ### Clipboard mode (works with either VRChat or Twitch)
 

@@ -21,6 +21,7 @@ from ytt.config import load_config
 from ytt.obs import app as browser_app
 from ytt.obs import run_server as _run_browser_server
 from ytt.obs import server as browser_server
+from ytt.obs_ws import ObsWsClient
 from ytt.transcription import (
     TRANSCRIPTION_INTERVAL,
     TranscriptionBuffer,
@@ -45,6 +46,7 @@ class STTOrchestrator:
         broadcast_manager: BroadcastManager,
         transcription_runner: TranscriptionRunner,
         twitch_client: TwitchChatClient | None,
+        obs_ws: ObsWsClient | None = None,
     ) -> None:
         """Initialize the orchestrator with its components.
 
@@ -52,12 +54,14 @@ class STTOrchestrator:
             broadcast_manager: Manages broadcasting transcriptions.
             transcription_runner: Handles transcription logic and buffering.
             twitch_client: Optional Twitch chat client for Twitch mode.
+            obs_ws: Optional OBS WebSocket client for sending captions.
         """
         self.is_running = False
         self._audio_queue: queue.Queue[_Chunk] = queue.Queue()
         self._broadcast_manager = broadcast_manager
         self._transcription_runner = transcription_runner
         self._twitch_client = twitch_client
+        self._obs_ws = obs_ws
 
         # Create and wire our own AudioProcessor so on_chunk is bound before start().
         self._audio_processor: AudioProcessor = AudioProcessor(
@@ -176,6 +180,9 @@ class STTOrchestrator:
 
         browser_server.should_exit = True
 
+        if self._obs_ws is not None:
+            self._obs_ws.close()
+
         for t in threads:
             t.join()
 
@@ -229,11 +236,17 @@ def main(
     # Shared buffer — passed to both BroadcastManager and TranscriptionRunner
     transcription_buffer = TranscriptionBuffer()
 
+    # OBS WebSocket client (only in twitch mode)
+    obs_ws: ObsWsClient | None = None
+    if twitch:
+        obs_ws = ObsWsClient(host=config.obs_ws_host, port=config.obs_ws_port)
+
     broadcast_manager = BroadcastManager(
         transcription_buffer=transcription_buffer,
         twitch_mode=twitch,
         clipboard_mode=clipboard,
         twitch_chat=twitch_client,
+        obs_ws=obs_ws,
     )
 
     transcription_runner: TranscriptionRunner = TranscriptionRunner(
@@ -251,6 +264,7 @@ def main(
         broadcast_manager=broadcast_manager,
         transcription_runner=transcription_runner,
         twitch_client=twitch_client,
+        obs_ws=obs_ws,
     )
 
     try:

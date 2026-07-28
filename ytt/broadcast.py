@@ -14,6 +14,7 @@ import sounddevice as sd
 import soundfile as sf
 from pythonosc import udp_client
 
+from ytt.obs_ws import ObsWsClient
 from ytt.transcription import TranscriptionBuffer
 from ytt.twitch import TwitchChatClient
 
@@ -39,6 +40,7 @@ class BroadcastManager:
         twitch_mode: bool = False,
         clipboard_mode: bool = False,
         twitch_chat: TwitchChatClient | None = None,
+        obs_ws: ObsWsClient | None = None,
     ) -> None:
         """Initialize the broadcast manager.
 
@@ -48,12 +50,15 @@ class BroadcastManager:
             clipboard_mode: If True, copy completed transcriptions to system clipboard.
             twitch_chat: Optional TwitchChatClient for sending messages to Twitch.
                          Provided when twitch_mode is True.
+            obs_ws: Optional ObsWsClient for sending captions to OBS Studio.
+                    Provided when twitch_mode is True.
 
         """
         self.transcription_buffer: TranscriptionBuffer = transcription_buffer
         self.twitch_mode: bool = twitch_mode
         self.clipboard_mode: bool = clipboard_mode
         self._twitch_chat: TwitchChatClient | None = twitch_chat
+        self._obs_ws: ObsWsClient | None = obs_ws
         self.speech_triggered: bool = False
 
         # OSC client for VRC (non-Twitch mode)
@@ -80,7 +85,7 @@ class BroadcastManager:
 
         Reads from the transcription buffer and broadcasts based on mode:
 
-        - Twitch: sends only the last committed segment
+        - Twitch: sends only the last committed segment to Twitch chat and OBS WS
         - OSC: sets truncated running text for VRC chatbox
         - Clipboard: copies full untruncated text to system clipboard
         """
@@ -88,11 +93,14 @@ class BroadcastManager:
         if self.clipboard_mode:
             pyperclip.copy(self.transcription_buffer.get_full())
 
-        # Twitch mode → send last segment only to chat via client
-        if self.twitch_mode and self._twitch_chat:
+        if self.twitch_mode:
+            # Send last committed segment to Twitch chat and OBS WebSocket
             text = self.transcription_buffer.last()
             if text:
-                self._twitch_chat.send_message(text)
+                if self._twitch_chat:
+                    self._twitch_chat.send_message(text)
+                if self._obs_ws:
+                    self._obs_ws.send_caption(text)
             return
 
         # Non-Twitch: set OSC input text for the input thread to dispatch

@@ -23,6 +23,8 @@ class Config(BaseModel):
     replacements: dict[str, str] = Field(default_factory=dict)
     audio_input_device: str | None = None
     audio_output_device: str | None = None
+    obs_ws_host: str = "localhost"
+    obs_ws_port: int = 4444
 
 
 def load_config(path: Path = Path("config.json")) -> Config:
