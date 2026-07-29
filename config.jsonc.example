@@ -17,6 +17,7 @@
   "replacements": {},
   "audio_input_device": null,
   "audio_output_device": null,
+  # OBS WebSocket settings — omit to disable OBS closed captions
   "obs_ws_host": "localhost",
   "obs_ws_port": 4444
 }

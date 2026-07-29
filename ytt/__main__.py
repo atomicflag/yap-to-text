@@ -86,7 +86,7 @@ class STTOrchestrator:
         processing_thread = threading.Thread(target=self._process_loop)
         threads.append(processing_thread)
 
-        if self._twitch_client and self._obs_ws:
+        if self._twitch_client:
             # Twitch mode: chat thread + browser source
             twitch_thread = threading.Thread(
                 target=self._twitch_client.run, args=(stop_event,)
@@ -97,8 +97,9 @@ class STTOrchestrator:
             browser_source_thread = threading.Thread(target=_run_browser_server)
             threads.append(browser_source_thread)
 
-            obs_ws_thread = threading.Thread(target=self._obs_ws.run)
-            threads.append(obs_ws_thread)
+            if self._obs_ws:
+                obs_ws_thread = threading.Thread(target=self._obs_ws.run)
+                threads.append(obs_ws_thread)
         else:
             # VRC/OSC mode: OSC input thread only
             osc_thread = threading.Thread(
@@ -239,9 +240,9 @@ def main(
     # Shared buffer — passed to both BroadcastManager and TranscriptionRunner
     transcription_buffer = TranscriptionBuffer()
 
-    # OBS WebSocket client (only in twitch mode)
+    # OBS WebSocket client (only in twitch mode when both host and port are configured)
     obs_ws: ObsWsClient | None = None
-    if twitch:
+    if twitch and config.obs_ws_host is not None and config.obs_ws_port is not None:
         obs_ws = ObsWsClient(host=config.obs_ws_host, port=config.obs_ws_port)
 
     broadcast_manager = BroadcastManager(
