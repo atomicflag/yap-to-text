@@ -86,7 +86,7 @@ class STTOrchestrator:
         processing_thread = threading.Thread(target=self._process_loop)
         threads.append(processing_thread)
 
-        if self._twitch_client is not None:
+        if self._twitch_client and self._obs_ws:
             # Twitch mode: chat thread + browser source
             twitch_thread = threading.Thread(
                 target=self._twitch_client.run, args=(stop_event,)
@@ -96,6 +96,9 @@ class STTOrchestrator:
             browser_app.state.broadcast_manager = self._broadcast_manager
             browser_source_thread = threading.Thread(target=_run_browser_server)
             threads.append(browser_source_thread)
+
+            obs_ws_thread = threading.Thread(target=self._obs_ws.run)
+            threads.append(obs_ws_thread)
         else:
             # VRC/OSC mode: OSC input thread only
             osc_thread = threading.Thread(
@@ -180,7 +183,7 @@ class STTOrchestrator:
 
         browser_server.should_exit = True
 
-        if self._obs_ws is not None:
+        if self._obs_ws:
             self._obs_ws.close()
 
         for t in threads:
