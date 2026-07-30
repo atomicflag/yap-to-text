@@ -96,10 +96,6 @@ class STTOrchestrator:
             browser_app.state.broadcast_manager = self._broadcast_manager
             browser_source_thread = threading.Thread(target=_run_browser_server)
             threads.append(browser_source_thread)
-
-            if self._obs_ws:
-                obs_ws_thread = threading.Thread(target=self._obs_ws.run)
-                threads.append(obs_ws_thread)
         else:
             # VRC/OSC mode: OSC input thread only
             osc_thread = threading.Thread(

@@ -19,7 +19,7 @@ dependencies = [
   "typer~=0.15",
   "commentjson~=0.9",
   "bitsandbytes>=0.50.0",
-  "websocket-client~=0.58",
+  "obs-websocket-py>=1.0",
 ]
 
 [tool.uv.sources]

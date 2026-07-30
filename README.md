@@ -101,7 +101,7 @@ To display captions in OBS, add a Browser source:
 
 #### Optional: OBS WebSocket closed captions
 
-YTT can optionally send each completed caption to OBS Studio via the [OBS WebSocket plugin](https://github.com/obsproject/obs-websocket) `SendCaptions` API, which embeds them as CEA-608 closed captions into your stream. Twitch viewers can then toggle CC on/off.
+YTT can optionally send each completed caption to OBS Studio via the [OBS WebSocket plugin](https://github.com/obsproject/obs-websocket) `SendStreamCaption` API (v5 protocol), which embeds them as CEA-608 closed captions into your stream. Twitch viewers can then toggle CC on/off.
 
 To enable: install the OBS WebSocket plugin, enable the WebSocket server in **Tools → WebSocket Server Settings**, and set `obs_ws_host` and `obs_ws_port` in `config.jsonc`.
 

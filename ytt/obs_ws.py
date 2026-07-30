@@ -1,19 +1,18 @@
-"""OBS WebSocket client: sends closed captions to OBS Studio."""
+"""OBS WebSocket client: sends broadcast captions to OBS Studio (v5 protocol)."""
 
-import json
 import logging
 
-import websocket
+from obswebsocket import obsws, requests
 
 logger = logging.getLogger(__name__)
 
 
 class ObsWsClient:
-    """Client for sending closed captions to OBS Studio via WebSocket.
+    """Client for sending broadcast captions to OBS Studio (v5 protocol).
 
-    Connects to the OBS WebSocket server (default: ws://localhost:4444) and
-    sends ``SendCaptions`` requests for each committed transcription segment.
-    Runs its own event loop in a background thread via ``run()``.
+    Uses the obs-websocket-py library to handle the v5 protocol handshake
+    (Hello → Identify → Identified) and SendStreamCaption requests.
+    Sends captions to stream output so platforms like Twitch can display them.
     """
 
     def __init__(self, *, host: str = "localhost", port: int = 4444) -> None:
@@ -25,53 +24,22 @@ class ObsWsClient:
         """
         self._host: str = host
         self._port: int = port
-        self._url: str = f"ws://{self._host}:{self._port}"
-        self._ws: websocket.WebSocketApp | None = None
+        self._ws: obsws = obsws(host, port, "")
+        self._ws.on_connect = self._on_connect
+        self._ws.connect()
 
-    def run(self) -> None:
-        """Start the WebSocket connection event loop.
-
-        Blocks until the connection is closed (e.g. via ``close()``).
-        Call this in a background thread.
-        """
-
-        def _on_open(ws: websocket.WebSocketApp) -> None:
-            logger.info("Connected to OBS WebSocket at %s", self._url)
-
-        def _on_error(ws: websocket.WebSocketApp, error: Exception) -> None:
-            logger.warning("OBS WebSocket error: %s", error)
-
-        def _on_close(
-            ws: websocket.WebSocketApp,
-            close_status_code: int,
-            close_msg: str | None,
-        ) -> None:
-            logger.info(
-                "OBS WebSocket closed (status=%s, msg=%s)", close_status_code, close_msg
-            )
-
-        self._ws = websocket.WebSocketApp(
-            self._url,
-            on_open=_on_open,
-            on_error=_on_error,
-            on_close=_on_close,
-        )
-
-        self._ws.run_forever()
+    @staticmethod
+    def _on_connect(client: obsws) -> None:
+        logger.info("Connected to OBS WebSocket at %s:%s", client.host, client.port)
 
     def send_caption(self, text: str) -> None:
-        """Send a closed caption to OBS Studio."""
-        message: dict = {
-            "request-type": "SendCaptions",
-            "message-id": "",
-            "text": text,
-        }
-        payload: str = json.dumps(message)
+        """Send a broadcast caption to OBS for stream output.
 
-        if self._ws is not None:
-            self._ws.send(payload)
+        This sends the caption to the stream output so platforms like
+        Twitch can display it as "Closed Captions" for viewers.
+        """
+        self._ws.call(requests.SendStreamCaption(captionText=text))
 
     def close(self) -> None:
         """Close the WebSocket connection, if open."""
-        if self._ws is not None:
-            self._ws.close()
+        self._ws.disconnect()

@@ -1367,6 +1367,17 @@ wheels = [
 ]
 
 [[package]]
+name = "obs-websocket-py"
+version = "1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "websocket-client" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/79/79/9d97d956d4ec2bf621770363bf5de02bf404abfe674be0cf4630f4b80878/obs_websocket_py-1.0-py3-none-any.whl", hash = "sha256:c563a57a551d3c07428fa066b5b3e6e5963f634fb0f54408a9b46ff5b7441d65", size = 8462, upload-time = "2023-02-20T22:49:11.522Z" },
+]
+
+[[package]]
 name = "orjson"
 version = "3.11.9"
 source = { registry = "https://pypi.org/simple" }
@@ -2427,6 +2438,7 @@ dependencies = [
     { name = "flash-attn", version = "2.8.3+cu128torch2.11", source = { url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.6/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "flash-attn", version = "2.8.3.post1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "numba" },
+    { name = "obs-websocket-py" },
     { name = "pyperclip" },
     { name = "python-osc" },
     { name = "qwen-asr" },
@@ -2435,7 +2447,6 @@ dependencies = [
     { name = "torchaudio" },
     { name = "twitchapi" },
     { name = "typer" },
-    { name = "websocket-client" },
 ]
 
 [package.dev-dependencies]
@@ -2457,6 +2468,7 @@ requires-dist = [
     { name = "flash-attn", marker = "sys_platform == 'linux'", url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.4/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl" },
     { name = "flash-attn", marker = "sys_platform == 'win32'", url = "https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.6/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-win_amd64.whl" },
     { name = "numba", specifier = ">=0.59" },
+    { name = "obs-websocket-py", specifier = ">=1.0" },
     { name = "pyperclip", specifier = "~=1.11" },
     { name = "python-osc", specifier = "~=1.9" },
     { name = "qwen-asr", specifier = ">=0.0.6" },
@@ -2465,7 +2477,6 @@ requires-dist = [
     { name = "torchaudio", specifier = "~=2.11.0", index = "https://download.pytorch.org/whl/cu128" },
     { name = "twitchapi", specifier = "~=4.5" },
     { name = "typer", specifier = "~=0.15" },
-    { name = "websocket-client", specifier = "~=0.58" },
 ]
 
 [package.metadata.requires-dev]
