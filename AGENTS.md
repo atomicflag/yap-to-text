@@ -1,5 +1,9 @@
 # AGENTS.md — Project Guidelines for AI Agents
 
+- Do not preserve backwards compatibility.
+- Choose the simplest implementation that fully meets the current requirements.
+- Prefer established, well-maintained libraries over custom implementations.
+
 ## Python Import Policy
 
 Python `import` statements are **only allowed at the top of a module** (top-level scope).
