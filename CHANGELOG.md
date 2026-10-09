@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — 2026-10-09
+
+### Added
+
+- 4-bit quantized KV cache (quanto backend) during generation to further reduce VRAM usage
+- `optimum-quanto` dependency for KV cache quantization
+
+### Changed
+
+- Set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` to reduce CUDA allocator fragmentation
+
 ## [0.3.0] — 2026-07-28
 
 ### Added

@@ -10,7 +10,7 @@ from collections.abc import Callable
 import numpy as np
 import torch
 from qwen_asr import Qwen3ASRModel
-from transformers import BitsAndBytesConfig
+from transformers import BitsAndBytesConfig, GenerationConfig
 
 from .audio import SAMPLE_RATE
 
@@ -174,6 +174,10 @@ class TranscriptionRunner:
             max_inference_batch_size=1,
             max_new_tokens=256,
             quantization_config=bnb_config,
+            generation_config=GenerationConfig(
+                cache_implementation="quantized",
+                cache_config={"backend": "quanto", "nbits": 4},
+            ),
         )
 
         self.hallucinations: list[str] = hallucinations

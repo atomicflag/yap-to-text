@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 trans_logging.set_verbosity_error()
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 app = typer.Typer(help="Yap To Text — real-time captions for VRChat and Twitch")
 
