@@ -19,7 +19,7 @@ Turn your voice into text displayed inside VRChat's chatbox, or send transcripti
 | Requirement | Details |
 |---|---|
 | OS | Linux or Windows |
-| GPU | NVIDIA with 8+ GB VRAM (CUDA 12.8+) |
+| GPU | NVIDIA with 8+ GB VRAM (CUDA 13.2+) |
 | Python | 3.12 |
 | Package manager | [uv](https://docs.astral.sh/uv/) |
 

@@ -7,6 +7,7 @@ from collections.abc import Callable
 import numpy as np
 import sounddevice as sd
 import torch
+from silero_vad import load_silero_vad
 
 logger = logging.getLogger(__name__)
 
@@ -77,8 +78,7 @@ class AudioProcessor:
 
     def start(self) -> None:
         """Start the microphone input stream."""
-        self._load_vad_model()
-
+        self.vad = load_silero_vad()
         self._input_stream = sd.InputStream(
             samplerate=self.sample_rate,
             channels=1,
@@ -94,17 +94,6 @@ class AudioProcessor:
             self._input_stream.stop()
             self._input_stream.close()
             self._input_stream = None
-
-    # Private helpers
-
-    def _load_vad_model(self) -> None:
-        """Load the Silero VAD model via torch.hub."""
-        model, _ = torch.hub.load(
-            repo_or_dir="snakers4/silero-vad",
-            model="silero_vad",
-            trust_repo=True,
-        )
-        self.vad: torch.nn.Module = model
 
     def _audio_callback(
         self,
@@ -139,7 +128,7 @@ class AudioProcessor:
         if status:
             logger.warning("Audio callback status: %s", status)
 
-        speech_conf = self.vad(torch.from_numpy(indata[:, 0]), self.sample_rate).item()
+        speech_conf = self.vad(torch.from_numpy(indata[:, 0]), self.sample_rate).item()  # type: ignore
         self.speech_probability.append(speech_conf)
         avg_prob = sum(self.speech_probability) / len(self.speech_probability)
         is_speech: bool = avg_prob > SENSITIVITY
