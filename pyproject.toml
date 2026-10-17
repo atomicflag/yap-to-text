@@ -1,6 +1,6 @@
 [project]
 name = "yap-to-text"
-version = "0.3.1"
+version = "0.3.2"
 description = "Yap To Text — real-time transcription for VRChat and Twitch, powered by Qwen-ASR"
 readme = "README.md"
 requires-python = "~=3.12.0"
